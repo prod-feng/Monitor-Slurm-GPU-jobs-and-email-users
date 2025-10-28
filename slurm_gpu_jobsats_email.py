@@ -6,6 +6,9 @@ import json
 
 debug=9
 file_path = "jobstats.csv" 
+maxcount=6 - 1  # max -1.  E.g.,  6X10 minutes=1 hour. Cronjob interval:10 minues
+emailmax=2    # max emails to users per day
+emailcount=(24/emailmax)*6  # 10 minutes interval, 1 hour has 6 counts. 
 
 def convert_compressed_string_to_list(compressed_string):
     result_list = []
@@ -235,8 +238,8 @@ for badjob in new_bad_jobs:
         lastjobid,count=jobdetails[0].split(",")
         if debug>10:
             print(lastjobid, " : ",count)
-        if int(count) >=2:
-            emailjobs.append(lastjobid+","+str(int(count)) )
+        if int(count) >=maxcount:
+            updated_list.append(lastjobid+","+str(-int(emailcount)) )
             if debug > 0:
                 print("Found under-performancing job, email user:",emailjobs)
             #OK let's email
