@@ -256,9 +256,10 @@ for badjob in new_bad_jobs:
         if debug>10:
             print("append update list2:",updated_list)
 
-# pick up jobs that have emailed users. Keep the record, to avoid recount from 1
+# pick up jobs that have emailed users. Keep the record, to avoid recounting from 1
 for x in running_bad_jobs:
-    if x.split(",")[0] not in updated_list and int(x.split(",")[1]) < 0:
+    tmp = x.split(",")[0]
+    if  (not (any(tmp in sub for sub in updated_list))) and (int(x.split(",")[1]) < 0):
          updated_list.append(x)
         
 with open(file_path, "w") as file:
