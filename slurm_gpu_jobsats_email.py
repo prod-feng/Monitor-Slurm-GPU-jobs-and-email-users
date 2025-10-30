@@ -49,6 +49,8 @@ def read_slurm_jobinfo_json():
 
 def email_users(Nodes,UserId,JobId,GRES,gusage_total,gpuinfo):
       #Get users info
+      username_cmd="getent passwd|grep "+UserId+" |awk -F':' '{print $5}'|awk -F',' '{print $1}'"
+      username=subprocess.getoutput(username_cmd)    
       sconf_cmd="scontrol show job "+JobId+"|grep MailUser|awk '{print $1}'|sed 's/MailUser=//g'"
       email_addr= subprocess.getoutput(sconf_cmd)
       if not email_addr:
@@ -68,7 +70,7 @@ def email_users(Nodes,UserId,JobId,GRES,gusage_total,gpuinfo):
       contents="""
 <body style="font-family: sans-serif, Arial, Helvetica;">    
 <pre>    
-Dear """+UserId+""":
+Dear """+username+"""("""+UserId+""")"""+""":
 
 It seems that your computing job """+JobId+""" is under utilizing the """+str(ngpus)+""" GPU(s) on the cluster. The brief job information is here:
      GPU%   Gindex   Nodes   JobID    User      
