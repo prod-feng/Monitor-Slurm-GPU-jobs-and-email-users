@@ -150,8 +150,14 @@ new_bad_jobs=[]
 for jobline in jobstats.split("\n"):
     if debug > 10:
        print("Found line",jobline)
-    JobId,JobName,UserId,GroupId,MCS_label,RunTime,TimeLimit,TimeMin,Nodes,CPU_IDs,Mem,GRES = jobline.split()
-    JobId=JobId.split("=")[1]
+    # Support Array jobs
+    if "ArrayJobId" in jobline: # array jobs
+        JobId,ArrayJobId,ArrayTaskId,JobName,UserId,GroupId,MCS_label,RunTime,TimeLimit,TimeMin,Nodes,CPU_IDs,Mem,GRES = jobline.split()
+        JobId=ArrayJobId.split("=")[1]+"_"+ArrayTaskId.split("=")[1]
+    else: #regular jobs
+        JobId,JobName,UserId,GroupId,MCS_label,RunTime,TimeLimit,TimeMin,Nodes,CPU_IDs,Mem,GRES = jobline.split()
+        JobId=JobId.split("=")[1]
+    #    
     GRES=GRES.split("=")[1]
     RunTime=RunTime.split("=")[1]
     JobName=JobName.split("=")[1]
